@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map, switchMap } from 'rxjs';
 import { ProjectStatus } from '../../../core/models/project.model';
-import { TaskStatus } from '../../../core/models/task.model';
+import { Task, TaskStatus } from '../../../core/models/task.model';
 import { ProjectService } from '../../../core/services/project.service';
 import { TaskService } from '../../../core/services/task.service';
 import { UserRole } from '../../../core/models/user.model';
@@ -77,6 +77,16 @@ export class ProjectDetailPage {
       status: 'open',
       assignedRole: 'worker',
     });
+  }
+
+  protected deleteTask(task: Task): void {
+    const shouldDelete = confirm(`Aufgabe "${task.title}" wirklich loeschen?`);
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    this.taskService.deleteTask(task.id);
   }
 
   protected projectTone(status: ProjectStatus): 'progress' | 'success' | 'warning' {

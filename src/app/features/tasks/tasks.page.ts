@@ -116,6 +116,20 @@ export class TasksPage {
     });
   }
 
+  protected deleteTask(task: Task): void {
+    const shouldDelete = confirm(`Aufgabe "${task.title}" wirklich loeschen?`);
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    this.taskService.deleteTask(task.id);
+
+    if (this.editingTaskId() === task.id) {
+      this.resetForm();
+    }
+  }
+
   protected isEditingTask(taskId: string): boolean {
     return this.editingTaskId() === taskId;
   }

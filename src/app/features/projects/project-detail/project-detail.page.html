@@ -106,6 +106,16 @@
               <span>Zustaendig: {{ roleLabel(task.assignedRole) }}</span>
               <span>Task-ID: {{ task.id }}</span>
             </div>
+
+            <div class="task-card__actions">
+              <button
+                type="button"
+                class="task-card__button task-card__button--danger"
+                (click)="deleteTask(task)"
+              >
+                Loeschen
+              </button>
+            </div>
           </article>
         }
 

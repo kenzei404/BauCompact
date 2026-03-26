@@ -133,6 +133,13 @@
           <button type="button" class="task-card__button task-card__button--primary" (click)="advanceTaskStatus(task)">
             {{ nextStatusLabel(task.status) }}
           </button>
+          <button
+            type="button"
+            class="task-card__button task-card__button--danger"
+            (click)="deleteTask(task)"
+          >
+            Loeschen
+          </button>
         </div>
       </article>
     }

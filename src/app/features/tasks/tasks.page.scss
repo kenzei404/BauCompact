@@ -219,6 +219,11 @@
   opacity: 0.95;
 }
 
+.task-card__button--danger:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
 .task-empty {
   padding: 1.25rem;
   color: var(--text-muted);
