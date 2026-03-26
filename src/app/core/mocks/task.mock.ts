@@ -8,6 +8,7 @@ export const MOCK_TASKS: Task[] = [
     status: 'open',
     projectId: 'project-1',
     assignedRole: 'planner',
+    scheduledDate: '2026-03-30',
   },
   {
     id: 'task-2',
@@ -16,6 +17,7 @@ export const MOCK_TASKS: Task[] = [
     status: 'in_progress',
     projectId: 'project-2',
     assignedRole: 'site_manager',
+    scheduledDate: '2026-03-31',
   },
   {
     id: 'task-3',
@@ -24,6 +26,7 @@ export const MOCK_TASKS: Task[] = [
     status: 'done',
     projectId: 'project-3',
     assignedRole: 'company',
+    scheduledDate: '2026-04-01',
   },
   {
     id: 'task-4',
@@ -32,5 +35,6 @@ export const MOCK_TASKS: Task[] = [
     status: 'open',
     projectId: 'project-1',
     assignedRole: 'worker',
+    scheduledDate: '2026-04-02',
   },
 ];

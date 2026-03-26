@@ -1,0 +1,119 @@
+<section class="page-section">
+  <div class="page-header">
+    <div>
+      <p class="page-header__eyebrow">Kalender</p>
+      <h2>Termine und Aufgaben im Blick</h2>
+    </div>
+    <p class="page-header__text">
+      Monatsansicht fuer den schnellen Ueberblick, Wochenansicht fuer mehr fachliche Details.
+    </p>
+  </div>
+
+  <section class="calendar-shell">
+    <div class="calendar-toolbar">
+      <div class="calendar-toolbar__nav">
+        <button
+          type="button"
+          class="calendar-toolbar__button"
+          mwlCalendarPreviousView
+          [view]="view()"
+          [viewDate]="viewDate()"
+          (viewDateChange)="setViewDate($event)"
+        >
+          Zurueck
+        </button>
+        <button
+          type="button"
+          class="calendar-toolbar__button"
+          mwlCalendarToday
+          [viewDate]="viewDate()"
+          (viewDateChange)="setViewDate($event)"
+        >
+          Heute
+        </button>
+        <button
+          type="button"
+          class="calendar-toolbar__button"
+          mwlCalendarNextView
+          [view]="view()"
+          [viewDate]="viewDate()"
+          (viewDateChange)="setViewDate($event)"
+        >
+          Weiter
+        </button>
+      </div>
+
+      <h3 class="calendar-toolbar__title">
+        {{ viewDate() | calendarDate: (view() + 'ViewTitle') : 'de' : 1 }}
+      </h3>
+
+      <div class="calendar-toolbar__switch">
+        <button
+          type="button"
+          class="calendar-toolbar__mode"
+          [class.is-active]="view() === 'month'"
+          (click)="setView('month')"
+        >
+          Monat
+        </button>
+        <button
+          type="button"
+          class="calendar-toolbar__mode"
+          [class.is-active]="view() === 'week'"
+          (click)="setView('week')"
+        >
+          Woche
+        </button>
+      </div>
+    </div>
+
+    <div class="calendar-board">
+      @switch (view()) {
+        @case ('month') {
+          <mwl-calendar-month-view
+            [viewDate]="viewDate()"
+            [events]="monthEvents()"
+            [weekStartsOn]="1"
+            (eventClicked)="selectEvent($event.event)"
+          />
+        }
+        @case ('week') {
+          <mwl-calendar-week-view
+            [viewDate]="viewDate()"
+            [events]="weekEvents()"
+            [weekStartsOn]="1"
+            [dayStartHour]="7"
+            [dayEndHour]="19"
+            (eventClicked)="selectEvent($event.event)"
+          />
+        }
+      }
+    </div>
+  </section>
+
+  <section class="detail-panel">
+    <div class="detail-panel__header">
+      <div>
+        <p class="detail-panel__eyebrow">Eintragsdetails</p>
+        <h3>{{ selectedTask() ? selectedTask()!.title : 'Kalendereintrag waehlen' }}</h3>
+      </div>
+      @if (selectedTask(); as task) {
+        <span class="detail-panel__date">{{ task.scheduledDate }}</span>
+      }
+    </div>
+
+    @if (selectedTask(); as task) {
+      <div class="detail-panel__content">
+        <div class="detail-panel__meta">
+          <span>Projekt: {{ task.projectName }}</span>
+          <span>Status: {{ taskStatusLabel(task.status) }}</span>
+        </div>
+        <p>{{ task.description }}</p>
+      </div>
+    } @else {
+      <p class="detail-panel__empty">
+        Klicke im Kalender auf einen Eintrag, um die Details darunter anzuzeigen.
+      </p>
+    }
+  </section>
+</section>

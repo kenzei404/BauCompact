@@ -3,6 +3,7 @@
     <div>
       <p class="page-heading__eyebrow">Dashboard</p>
       <h2>Willkommen zur Projektuebersicht</h2>
+      <p class="page-heading__text">{{ projectCount() }} aktive Projekte im aktuellen Workspace</p>
     </div>
 
     @if (currentUser; as user) {
@@ -16,10 +17,67 @@
 
   <div class="summary-grid">
     @for (card of summaryCards(); track card.label) {
-      <article class="summary-card">
+      <button
+        type="button"
+        class="summary-card"
+        [class.is-active]="selectedStatus() === card.key"
+        (click)="toggleStatusSection(card.key)"
+      >
         <span>{{ card.label }}</span>
         <strong>{{ card.value }}</strong>
-      </article>
+      </button>
     }
   </div>
+
+  @if (selectedStatus(); as activeStatus) {
+    <section class="detail-section">
+      <div class="detail-section__header">
+        <div>
+          <p class="detail-section__eyebrow">Status-Details</p>
+          <h3>{{ taskStatusLabel(activeStatus) }}</h3>
+        </div>
+        <span class="detail-section__count">{{ detailTasks().length }} Aufgaben</span>
+      </div>
+
+      <div class="detail-task-list">
+        @for (task of detailTasks(); track task.id) {
+          <article class="detail-task-card">
+            <div class="detail-task-card__top">
+              <div>
+                <h4>{{ task.title }}</h4>
+                <p>{{ task.description }}</p>
+              </div>
+
+              <app-status-badge [tone]="taskTone(task.status)">
+                {{ taskStatusLabel(task.status) }}
+              </app-status-badge>
+            </div>
+
+            <div class="detail-task-card__meta">
+              <span>Projekt: {{ task.projectName }}</span>
+              <a [routerLink]="['/projects', task.projectId]">Projekt oeffnen</a>
+            </div>
+
+            @if (task.status !== 'done') {
+              <div class="detail-task-card__actions">
+                <button
+                  type="button"
+                  class="detail-task-card__action-button"
+                  (click)="advanceTaskStatus(task)"
+                >
+                  {{ actionLabel(task.status) }}
+                </button>
+              </div>
+            }
+          </article>
+        }
+
+        @if (detailTasks().length === 0) {
+          <article class="detail-task-empty">
+            Fuer diesen Status sind aktuell keine Aufgaben vorhanden.
+          </article>
+        }
+      </div>
+    </section>
+  }
 </section>

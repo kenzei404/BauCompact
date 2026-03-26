@@ -15,6 +15,12 @@
   }
 }
 
+.page-heading__text {
+  margin: 0.55rem 0 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
 .page-heading__eyebrow {
   margin: 0;
   text-transform: uppercase;
@@ -50,6 +56,12 @@
 .summary-card {
   display: grid;
   gap: 0.75rem;
+  border: 1px solid transparent;
+  text-align: left;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 
   span {
     color: var(--text-muted);
@@ -58,6 +70,106 @@
   strong {
     font-size: 2rem;
   }
+}
+
+.summary-card:hover,
+.summary-card.is-active {
+  transform: translateY(-2px);
+  border-color: rgba(47, 107, 69, 0.2);
+  box-shadow: 0 20px 44px rgba(31, 42, 31, 0.12);
+}
+
+.summary-card.is-active {
+  background: linear-gradient(180deg, #ffffff, #eef5ef);
+}
+
+.detail-section,
+.detail-task-card,
+.detail-task-empty {
+  border-radius: 1.25rem;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.detail-section {
+  display: grid;
+  gap: 1rem;
+  padding: 1.4rem;
+}
+
+.detail-section__header,
+.detail-task-card__top,
+.detail-task-card__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.detail-section__eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--brand);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.detail-section__header h3,
+.detail-task-card h4 {
+  margin: 0.35rem 0 0;
+}
+
+.detail-section__count {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.detail-task-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.detail-task-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+
+  p {
+    margin: 0.6rem 0 0;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+}
+
+.detail-task-card__meta {
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 0.95rem;
+
+  a:hover {
+    color: var(--brand);
+  }
+}
+
+.detail-task-card__actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.detail-task-card__action-button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.85rem 1.3rem;
+  background: linear-gradient(135deg, var(--success), #236946);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.detail-task-empty {
+  padding: 1.25rem;
+  color: var(--text-muted);
 }
 
 @media (max-width: 900px) {
@@ -71,5 +183,11 @@
 
   .summary-grid {
     grid-template-columns: 1fr;
+  }
+
+  .detail-section__header,
+  .detail-task-card__top {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

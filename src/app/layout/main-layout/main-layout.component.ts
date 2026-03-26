@@ -19,6 +19,7 @@ export class MainLayoutComponent {
     { label: 'Dashboard', link: '/dashboard' },
     { label: 'Projekte', link: '/projects' },
     { label: 'Aufgaben', link: '/tasks' },
+    { label: 'Kalender', link: '/calendar' },
   ];
 
   protected readonly roleLabel = roleLabel;

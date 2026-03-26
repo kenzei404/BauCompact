@@ -1,0 +1,145 @@
+.page-section {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+
+  h2 {
+    margin: 0.35rem 0 0;
+  }
+}
+
+.page-header__eyebrow,
+.detail-panel__eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--brand);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.page-header__text {
+  max-width: 34rem;
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.calendar-shell,
+.detail-panel {
+  border-radius: 1.25rem;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.calendar-shell {
+  display: grid;
+  gap: 1rem;
+  padding: 1.4rem;
+}
+
+.calendar-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.calendar-toolbar__nav,
+.calendar-toolbar__switch {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.calendar-toolbar__button,
+.calendar-toolbar__mode {
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 0.75rem 1.1rem;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.calendar-toolbar__mode.is-active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #ffffff;
+}
+
+.calendar-toolbar__title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.calendar-board {
+  overflow-x: auto;
+}
+
+.detail-panel {
+  display: grid;
+  gap: 1rem;
+  padding: 1.4rem;
+}
+
+.detail-panel__header,
+.detail-panel__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.detail-panel__header h3 {
+  margin: 0.35rem 0 0;
+}
+
+.detail-panel__date,
+.detail-panel__meta,
+.detail-panel__empty,
+.detail-panel__content p {
+  color: var(--text-muted);
+}
+
+.detail-panel__content {
+  display: grid;
+  gap: 0.9rem;
+
+  p {
+    margin: 0;
+    line-height: 1.6;
+  }
+}
+
+:host ::ng-deep .cal-month-view .cal-event,
+:host ::ng-deep .cal-week-view .cal-event {
+  border-radius: 0.55rem;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+:host ::ng-deep .cal-month-view .cal-day-badge {
+  background-color: var(--brand);
+}
+
+:host ::ng-deep .cal-month-view .cal-open-day-events,
+:host ::ng-deep .cal-week-view .cal-time-events .cal-day-column {
+  font-family: var(--font-family);
+}
+
+@media (max-width: 900px) {
+  .page-header,
+  .detail-panel__header,
+  .detail-panel__meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

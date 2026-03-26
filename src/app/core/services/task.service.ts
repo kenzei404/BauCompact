@@ -10,6 +10,7 @@ export interface CreateTaskInput {
   status: TaskStatus;
   projectId: string;
   assignedRole: UserRole;
+  scheduledDate?: string;
 }
 
 export interface UpdateTaskInput extends CreateTaskInput {
@@ -38,6 +39,7 @@ export class TaskService {
       ...task,
       description: task.description.trim(),
       title: task.title.trim(),
+      scheduledDate: task.scheduledDate ?? new Date().toISOString().slice(0, 10),
     };
 
     this.tasksSubject.next([nextTask, ...this.tasksSubject.value]);
@@ -48,9 +50,11 @@ export class TaskService {
       this.tasksSubject.value.map((task) =>
         task.id === updatedTask.id
           ? {
+              ...task,
               ...updatedTask,
               title: updatedTask.title.trim(),
               description: updatedTask.description.trim(),
+              scheduledDate: updatedTask.scheduledDate ?? task.scheduledDate,
             }
           : task,
       ),

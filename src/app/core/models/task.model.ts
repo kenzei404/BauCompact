@@ -9,4 +9,5 @@ export interface Task {
   status: TaskStatus;
   projectId: string;
   assignedRole: UserRole;
+  scheduledDate?: string;
 }
