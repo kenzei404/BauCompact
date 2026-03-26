@@ -1,0 +1,25 @@
+<section class="page-section">
+  <div class="page-heading">
+    <div>
+      <p class="page-heading__eyebrow">Dashboard</p>
+      <h2>Willkommen zur Projektuebersicht</h2>
+    </div>
+
+    @if (currentUser; as user) {
+      <div class="user-card">
+        <strong>{{ user.name }}</strong>
+        <span>{{ user.email }}</span>
+        <span>Rolle: {{ roleLabel(user.role) }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="summary-grid">
+    @for (card of summaryCards(); track card.label) {
+      <article class="summary-card">
+        <span>{{ card.label }}</span>
+        <strong>{{ card.value }}</strong>
+      </article>
+    }
+  </div>
+</section>

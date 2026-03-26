@@ -1,0 +1,43 @@
+<div class="layout-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand__eyebrow">BauConect</span>
+      <strong>Zusammenarbeit im Bauwesen</strong>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Hauptnavigation">
+      @for (item of navigationItems; track item.link) {
+        <a
+          class="sidebar-nav__link"
+          [routerLink]="item.link"
+          routerLinkActive="is-active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          {{ item.label }}
+        </a>
+      }
+    </nav>
+
+    <button class="logout-button" type="button" (click)="logout()">Logout</button>
+  </aside>
+
+  <div class="layout-main">
+    <header class="header">
+      <div>
+        <p class="header__eyebrow">MVP Workspace</p>
+        <h1>BauConect</h1>
+      </div>
+
+      @if (currentUser; as user) {
+        <div class="header__user">
+          <strong>{{ user.name }}</strong>
+          <span>{{ roleLabel(user.role) }}</span>
+        </div>
+      }
+    </header>
+
+    <main class="content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

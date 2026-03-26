@@ -1,0 +1,26 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: #eef2ee;
+  color: var(--text-main);
+}
+
+.status-badge.progress {
+  background: #edf4ef;
+  color: var(--brand-dark);
+}
+
+.status-badge.success {
+  background: #e7f4ed;
+  color: var(--success);
+}
+
+.status-badge.warning {
+  background: #fff4e5;
+  color: var(--warning);
+}

@@ -1,0 +1,32 @@
+<section class="page-section">
+  <div class="page-header">
+    <div>
+      <p class="page-header__eyebrow">Projekte</p>
+      <h2>Aktive Bauvorhaben</h2>
+    </div>
+    <p class="page-header__text">
+      Die Liste ist bewusst einfach gehalten und vorbereitet fuer eine spaetere Detailseite.
+    </p>
+  </div>
+
+  <div class="project-list">
+    @for (project of projects(); track project.id) {
+      <a class="project-card" [routerLink]="['/projects', project.id]">
+        <div class="project-card__top">
+          <div>
+            <h3>{{ project.name }}</h3>
+            <p>{{ project.description }}</p>
+          </div>
+          <app-status-badge [tone]="projectTone(project.status)">
+            {{ projectStatusLabel(project.status) }}
+          </app-status-badge>
+        </div>
+
+        <div class="project-card__meta">
+          <span>Verantwortung: {{ roleLabel(project.ownerRole) }}</span>
+          <span>Details oeffnen</span>
+        </div>
+      </a>
+    }
+  </div>
+</section>

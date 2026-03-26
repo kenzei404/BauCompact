@@ -1,0 +1,49 @@
+<section class="page-section">
+  <div class="page-header">
+    <div>
+      <p class="page-header__eyebrow">Aufgaben</p>
+      <h2>Offene Punkte im Team</h2>
+    </div>
+    <p class="page-header__text">Status, Projektbezug und verantwortliche Rolle auf einen Blick.</p>
+  </div>
+
+  <div class="task-filters" role="tablist" aria-label="Aufgaben filtern">
+    @for (filter of filterOptions; track filter.value) {
+      <button
+        type="button"
+        class="task-filter"
+        [class.is-active]="selectedFilter() === filter.value"
+        (click)="setFilter(filter.value)"
+      >
+        {{ filter.label }}
+      </button>
+    }
+  </div>
+
+  <div class="task-list">
+    @for (task of taskItems(); track task.id) {
+      <article class="task-card">
+        <div class="task-card__top">
+          <div>
+            <h3>{{ task.title }}</h3>
+            <p>{{ task.description }}</p>
+          </div>
+          <app-status-badge [tone]="taskTone(task.status)">
+            {{ taskStatusLabel(task.status) }}
+          </app-status-badge>
+        </div>
+
+        <div class="task-card__meta">
+          <span>Projekt: {{ task.projectName }}</span>
+          <span>Zustaendig: {{ roleLabel(task.assignedRole) }}</span>
+        </div>
+      </article>
+    }
+
+    @if (taskItems().length === 0) {
+      <article class="task-empty">
+        Keine Aufgaben fuer den gewaelten Filter vorhanden.
+      </article>
+    }
+  </div>
+</section>

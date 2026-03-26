@@ -1,0 +1,144 @@
+.layout-shell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  min-height: 100dvh;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem 1.5rem;
+  background: #233126;
+  color: #f3f7f3;
+}
+
+.brand {
+  display: grid;
+  gap: 0.45rem;
+
+  strong {
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+}
+
+.brand__eyebrow,
+.header__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: rgba(243, 247, 243, 0.72);
+}
+
+.sidebar-nav {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.sidebar-nav__link,
+.logout-button {
+  border: 0;
+  border-radius: 1rem;
+  padding: 0.95rem 1rem;
+  text-align: left;
+  background: transparent;
+  color: inherit;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.sidebar-nav__link:hover,
+.sidebar-nav__link.is-active,
+.logout-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(2px);
+}
+
+.logout-button {
+  margin-top: auto;
+}
+
+.layout-main {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(18px);
+
+  h1 {
+    margin: 0.25rem 0 0;
+    font-size: 1.7rem;
+  }
+}
+
+.header__eyebrow {
+  color: var(--text-muted);
+}
+
+.header__user {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-soft);
+
+  span {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+}
+
+.content {
+  padding: 2rem;
+}
+
+@media (max-width: 960px) {
+  .layout-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .sidebar-nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .logout-button {
+    margin-top: 0;
+  }
+
+  .header,
+  .content {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .sidebar-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .header__user {
+    width: 100%;
+  }
+}

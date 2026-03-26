@@ -1,0 +1,67 @@
+<section class="page-section">
+  <a class="back-link" routerLink="/projects">Zurueck zur Projektliste</a>
+
+  @if (project(); as project) {
+    <article class="detail-card">
+      <div class="detail-card__top">
+        <div>
+          <p class="detail-card__eyebrow">Projekt-Detail</p>
+          <h2>{{ project.name }}</h2>
+          <p class="detail-card__description">{{ project.description }}</p>
+        </div>
+
+        <app-status-badge [tone]="projectTone(project.status)">
+          {{ projectStatusLabel(project.status) }}
+        </app-status-badge>
+      </div>
+
+      <div class="detail-card__meta">
+        <span>Verantwortung: {{ roleLabel(project.ownerRole) }}</span>
+        <span>{{ taskCountLabel() }}</span>
+      </div>
+    </article>
+
+    <div class="tasks-section">
+      <div class="tasks-section__header">
+        <div>
+          <p class="tasks-section__eyebrow">Projektaufgaben</p>
+          <h3>Zugehoerige Aufgaben</h3>
+        </div>
+      </div>
+
+      <div class="task-list">
+        @for (task of projectTasks(); track task.id) {
+          <article class="task-card">
+            <div class="task-card__top">
+              <div>
+                <h4>{{ task.title }}</h4>
+                <p>{{ task.description }}</p>
+              </div>
+
+              <app-status-badge [tone]="taskTone(task.status)">
+                {{ taskStatusLabel(task.status) }}
+              </app-status-badge>
+            </div>
+
+            <div class="task-card__meta">
+              <span>Zustaendig: {{ roleLabel(task.assignedRole) }}</span>
+              <span>Task-ID: {{ task.id }}</span>
+            </div>
+          </article>
+        }
+
+        @if (projectTasks().length === 0) {
+          <article class="task-empty">Fuer dieses Projekt sind aktuell keine Aufgaben hinterlegt.</article>
+        }
+      </div>
+    </div>
+  } @else {
+    <article class="detail-card detail-card--empty">
+      <p class="detail-card__eyebrow">Projekt-Detail</p>
+      <h2>Projekt nicht gefunden</h2>
+      <p class="detail-card__description">
+        Die angeforderte Projekt-ID ist in den Mock-Daten aktuell nicht vorhanden.
+      </p>
+    </article>
+  }
+</section>
