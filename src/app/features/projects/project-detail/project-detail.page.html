@@ -29,6 +29,65 @@
         </div>
       </div>
 
+      <section class="task-form-card">
+        <div class="task-form-card__header">
+          <div>
+            <p class="tasks-section__eyebrow">Neue Aufgabe</p>
+            <h3>Aufgabe fuer dieses Projekt anlegen</h3>
+          </div>
+          <p class="task-form-card__text">
+            Das Projekt wird automatisch aus der aktuellen Detailansicht uebernommen.
+          </p>
+        </div>
+
+        <form class="task-form" [formGroup]="taskForm" (ngSubmit)="submitTask()">
+          <label class="form-field">
+            <span>Titel</span>
+            <input type="text" formControlName="title" placeholder="z. B. Ausfuehrungsplan abstimmen" />
+            @if (taskForm.controls.title.touched && taskForm.controls.title.invalid) {
+              <small class="form-error">Titel ist ein Pflichtfeld.</small>
+            }
+          </label>
+
+          <label class="form-field form-field--wide">
+            <span>Beschreibung</span>
+            <textarea
+              rows="4"
+              formControlName="description"
+              placeholder="Kurze fachliche Beschreibung der projektbezogenen Aufgabe"
+            ></textarea>
+          </label>
+
+          <label class="form-field">
+            <span>Status</span>
+            <select formControlName="status">
+              @for (status of statusOptions; track status.value) {
+                <option [value]="status.value">{{ status.label }}</option>
+              }
+            </select>
+            @if (taskForm.controls.status.touched && taskForm.controls.status.invalid) {
+              <small class="form-error">Status ist ein Pflichtfeld.</small>
+            }
+          </label>
+
+          <label class="form-field">
+            <span>Zustaendige Rolle</span>
+            <select formControlName="assignedRole">
+              @for (role of roleOptions; track role) {
+                <option [value]="role">{{ roleLabel(role) }}</option>
+              }
+            </select>
+            @if (taskForm.controls.assignedRole.touched && taskForm.controls.assignedRole.invalid) {
+              <small class="form-error">Zustaendige Rolle ist ein Pflichtfeld.</small>
+            }
+          </label>
+
+          <div class="task-form__actions">
+            <button type="submit" class="task-form__submit">Aufgabe erstellen</button>
+          </div>
+        </form>
+      </section>
+
       <div class="task-list">
         @for (task of projectTasks(); track task.id) {
           <article class="task-card">
