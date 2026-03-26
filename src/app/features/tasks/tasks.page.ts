@@ -1,9 +1,10 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TaskStatus } from '../../core/models/task.model';
+import { Task, TaskStatus } from '../../core/models/task.model';
 import { ProjectService } from '../../core/services/project.service';
 import { TaskService } from '../../core/services/task.service';
+import { UserRole } from '../../core/models/user.model';
 import { StatusBadgeComponent } from '../../shared/ui/status-badge/status-badge.component';
 import { roleLabel } from '../../shared/utils/role-label.util';
 import { taskStatusLabel } from '../../shared/utils/status-label.util';
@@ -37,11 +38,12 @@ export class TasksPage {
     'company',
     'site_manager',
     'worker',
-  ] as const;
+  ] satisfies UserRole[];
 
   protected readonly projects = toSignal(this.projectService.getProjects(), { initialValue: [] });
   protected readonly tasks = toSignal(this.taskService.getTasks(), { initialValue: [] });
   protected readonly selectedFilter = signal<'all' | TaskStatus>('all');
+  protected readonly editingTaskId = signal<string | null>(null);
   protected readonly roleLabel = roleLabel;
   protected readonly taskStatusLabel = taskStatusLabel;
   protected readonly taskForm = this.formBuilder.nonNullable.group({
@@ -49,7 +51,7 @@ export class TasksPage {
     description: [''],
     status: ['open' as TaskStatus, Validators.required],
     projectId: ['', Validators.required],
-    assignedRole: ['worker' as const, Validators.required],
+    assignedRole: ['worker' as UserRole, Validators.required],
   });
   protected readonly taskItems = computed(() =>
     this.tasks()
@@ -71,14 +73,51 @@ export class TasksPage {
       return;
     }
 
-    this.taskService.addTask(this.taskForm.getRawValue());
+    const formValue = this.taskForm.getRawValue();
+    const editingTaskId = this.editingTaskId();
+
+    if (editingTaskId) {
+      this.taskService.updateTask({
+        id: editingTaskId,
+        ...formValue,
+      });
+    } else {
+      this.taskService.addTask(formValue);
+    }
+
+    this.resetForm();
+  }
+
+  protected editTask(task: Task): void {
+    this.editingTaskId.set(task.id);
     this.taskForm.reset({
-      title: '',
-      description: '',
-      status: 'open',
-      projectId: '',
-      assignedRole: 'worker',
+      title: task.title,
+      description: task.description,
+      status: task.status,
+      projectId: task.projectId,
+      assignedRole: task.assignedRole,
     });
+  }
+
+  protected cancelEditing(): void {
+    this.resetForm();
+  }
+
+  protected advanceTaskStatus(task: Task): void {
+    const nextStatus = this.getNextStatus(task.status);
+
+    this.taskService.updateTask({
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      status: nextStatus,
+      projectId: task.projectId,
+      assignedRole: task.assignedRole,
+    });
+  }
+
+  protected isEditingTask(taskId: string): boolean {
+    return this.editingTaskId() === taskId;
   }
 
   protected taskTone(status: TaskStatus): 'progress' | 'success' | 'warning' {
@@ -91,5 +130,32 @@ export class TasksPage {
     }
 
     return 'progress';
+  }
+
+  protected nextStatusLabel(status: TaskStatus): string {
+    return `Status auf ${this.taskStatusLabel(this.getNextStatus(status))} setzen`;
+  }
+
+  private getNextStatus(status: TaskStatus): TaskStatus {
+    if (status === 'open') {
+      return 'in_progress';
+    }
+
+    if (status === 'in_progress') {
+      return 'done';
+    }
+
+    return 'open';
+  }
+
+  private resetForm(): void {
+    this.editingTaskId.set(null);
+    this.taskForm.reset({
+      title: '',
+      description: '',
+      status: 'open',
+      projectId: '',
+      assignedRole: 'worker',
+    });
   }
 }

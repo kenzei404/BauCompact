@@ -10,11 +10,17 @@
   <section class="task-form-card">
     <div class="task-form-card__header">
       <div>
-        <p class="task-form-card__eyebrow">Neue Aufgabe</p>
-        <h3>Aufgabe lokal anlegen</h3>
+        <p class="task-form-card__eyebrow">
+          {{ editingTaskId() ? 'Aufgabe bearbeiten' : 'Neue Aufgabe' }}
+        </p>
+        <h3>{{ editingTaskId() ? 'Bestehende Aufgabe anpassen' : 'Aufgabe lokal anlegen' }}</h3>
       </div>
       <p class="task-form-card__text">
-        Neue Eintraege werden direkt in die Mock-Liste uebernommen und sofort angezeigt.
+        {{
+          editingTaskId()
+            ? 'Aenderungen werden direkt in der In-Memory-Liste gespeichert.'
+            : 'Neue Eintraege werden direkt in die Mock-Liste uebernommen und sofort angezeigt.'
+        }}
       </p>
     </div>
 
@@ -71,7 +77,15 @@
       </label>
 
       <div class="task-form__actions">
-        <button type="submit" class="task-form__submit">Aufgabe erstellen</button>
+        <button type="submit" class="task-form__submit">
+          {{ editingTaskId() ? 'Aenderungen speichern' : 'Aufgabe erstellen' }}
+        </button>
+
+        @if (editingTaskId()) {
+          <button type="button" class="task-form__cancel" (click)="cancelEditing()">
+            Abbrechen
+          </button>
+        }
       </div>
     </form>
   </section>
@@ -105,6 +119,20 @@
         <div class="task-card__meta">
           <span>Projekt: {{ task.projectName }}</span>
           <span>Zustaendig: {{ roleLabel(task.assignedRole) }}</span>
+        </div>
+
+        <div class="task-card__actions">
+          <button
+            type="button"
+            class="task-card__button"
+            [class.is-active]="isEditingTask(task.id)"
+            (click)="editTask(task)"
+          >
+            Bearbeiten
+          </button>
+          <button type="button" class="task-card__button task-card__button--primary" (click)="advanceTaskStatus(task)">
+            {{ nextStatusLabel(task.status) }}
+          </button>
         </div>
       </article>
     }

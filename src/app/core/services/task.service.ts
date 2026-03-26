@@ -12,6 +12,10 @@ export interface CreateTaskInput {
   assignedRole: UserRole;
 }
 
+export interface UpdateTaskInput extends CreateTaskInput {
+  id: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -37,5 +41,23 @@ export class TaskService {
     };
 
     this.tasksSubject.next([nextTask, ...this.tasksSubject.value]);
+  }
+
+  updateTask(updatedTask: UpdateTaskInput): void {
+    this.tasksSubject.next(
+      this.tasksSubject.value.map((task) =>
+        task.id === updatedTask.id
+          ? {
+              ...updatedTask,
+              title: updatedTask.title.trim(),
+              description: updatedTask.description.trim(),
+            }
+          : task,
+      ),
+    );
+  }
+
+  deleteTask(id: string): void {
+    this.tasksSubject.next(this.tasksSubject.value.filter((task) => task.id !== id));
   }
 }
