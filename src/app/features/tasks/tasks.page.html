@@ -7,6 +7,75 @@
     <p class="page-header__text">Status, Projektbezug und verantwortliche Rolle auf einen Blick.</p>
   </div>
 
+  <section class="task-form-card">
+    <div class="task-form-card__header">
+      <div>
+        <p class="task-form-card__eyebrow">Neue Aufgabe</p>
+        <h3>Aufgabe lokal anlegen</h3>
+      </div>
+      <p class="task-form-card__text">
+        Neue Eintraege werden direkt in die Mock-Liste uebernommen und sofort angezeigt.
+      </p>
+    </div>
+
+    <form class="task-form" [formGroup]="taskForm" (ngSubmit)="submitTask()">
+      <label class="form-field">
+        <span>Titel</span>
+        <input type="text" formControlName="title" placeholder="z. B. Betoniertermin abstimmen" />
+        @if (taskForm.controls.title.touched && taskForm.controls.title.invalid) {
+          <small class="form-error">Titel ist ein Pflichtfeld.</small>
+        }
+      </label>
+
+      <label class="form-field form-field--wide">
+        <span>Beschreibung</span>
+        <textarea
+          rows="4"
+          formControlName="description"
+          placeholder="Kurze fachliche Beschreibung der Aufgabe"
+        ></textarea>
+      </label>
+
+      <label class="form-field">
+        <span>Status</span>
+        <select formControlName="status">
+          @for (status of statusOptions; track status.value) {
+            <option [value]="status.value">{{ status.label }}</option>
+          }
+        </select>
+        @if (taskForm.controls.status.touched && taskForm.controls.status.invalid) {
+          <small class="form-error">Status ist ein Pflichtfeld.</small>
+        }
+      </label>
+
+      <label class="form-field">
+        <span>Projekt</span>
+        <select formControlName="projectId">
+          <option value="">Projekt waehlen</option>
+          @for (project of projects(); track project.id) {
+            <option [value]="project.id">{{ project.name }}</option>
+          }
+        </select>
+        @if (taskForm.controls.projectId.touched && taskForm.controls.projectId.invalid) {
+          <small class="form-error">Projekt ist ein Pflichtfeld.</small>
+        }
+      </label>
+
+      <label class="form-field">
+        <span>Zustaendige Rolle</span>
+        <select formControlName="assignedRole">
+          @for (role of roleOptions; track role) {
+            <option [value]="role">{{ roleLabel(role) }}</option>
+          }
+        </select>
+      </label>
+
+      <div class="task-form__actions">
+        <button type="submit" class="task-form__submit">Aufgabe erstellen</button>
+      </div>
+    </form>
+  </section>
+
   <div class="task-filters" role="tablist" aria-label="Aufgaben filtern">
     @for (filter of filterOptions; track filter.value) {
       <button
