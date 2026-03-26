@@ -12,11 +12,17 @@
   <section class="project-form-card">
     <div class="project-form-card__header">
       <div>
-        <p class="project-form-card__eyebrow">Neues Projekt</p>
-        <h3>Projekt lokal anlegen</h3>
+        <p class="project-form-card__eyebrow">
+          {{ editingProjectId() ? 'Projekt bearbeiten' : 'Neues Projekt' }}
+        </p>
+        <h3>{{ editingProjectId() ? 'Bestehendes Projekt anpassen' : 'Projekt lokal anlegen' }}</h3>
       </div>
       <p class="project-form-card__text">
-        Neue Projekte erscheinen sofort in der Liste und sind direkt ueber die Detailseite erreichbar.
+        {{
+          editingProjectId()
+            ? 'Aenderungen werden direkt in der In-Memory-Liste gespeichert.'
+            : 'Neue Projekte erscheinen sofort in der Liste und sind direkt ueber die Detailseite erreichbar.'
+        }}
       </p>
     </div>
 
@@ -63,17 +69,29 @@
       </label>
 
       <div class="project-form__actions">
-        <button type="submit" class="project-form__submit">Projekt erstellen</button>
+        <button type="submit" class="project-form__submit">
+          {{ editingProjectId() ? 'Aenderungen speichern' : 'Projekt erstellen' }}
+        </button>
+
+        @if (editingProjectId()) {
+          <button type="button" class="project-form__cancel" (click)="cancelEditing()">
+            Abbrechen
+          </button>
+        }
       </div>
     </form>
   </section>
 
   <div class="project-list">
     @for (project of projects(); track project.id) {
-      <a class="project-card" [routerLink]="['/projects', project.id]">
+      <article class="project-card">
         <div class="project-card__top">
           <div>
-            <h3>{{ project.name }}</h3>
+            <h3>
+              <a class="project-card__title-link" [routerLink]="['/projects', project.id]">
+                {{ project.name }}
+              </a>
+            </h3>
             <p>{{ project.description }}</p>
           </div>
           <app-status-badge [tone]="projectTone(project.status)">
@@ -83,9 +101,29 @@
 
         <div class="project-card__meta">
           <span>Verantwortung: {{ roleLabel(project.ownerRole) }}</span>
-          <span>Details oeffnen</span>
+          <a class="project-card__details-link" [routerLink]="['/projects', project.id]">
+            Details oeffnen
+          </a>
         </div>
-      </a>
+
+        <div class="project-card__actions">
+          <button
+            type="button"
+            class="project-card__button"
+            [class.is-active]="isEditingProject(project.id)"
+            (click)="editProject(project)"
+          >
+            Bearbeiten
+          </button>
+          <button
+            type="button"
+            class="project-card__button project-card__button--danger"
+            (click)="deleteProject(project)"
+          >
+            Loeschen
+          </button>
+        </div>
+      </article>
     }
   </div>
 </section>

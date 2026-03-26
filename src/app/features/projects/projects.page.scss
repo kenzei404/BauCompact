@@ -114,15 +114,29 @@
 .project-form__actions {
   display: flex;
   justify-content: flex-start;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
-.project-form__submit {
+.project-form__submit,
+.project-form__cancel,
+.project-card__button {
   border: 0;
   border-radius: 999px;
   padding: 0.85rem 1.3rem;
+  font-weight: 700;
+}
+
+.project-form__submit {
   background: linear-gradient(135deg, var(--brand), var(--brand-dark));
   color: #ffffff;
-  font-weight: 700;
+}
+
+.project-form__cancel,
+.project-card__button {
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
 }
 
 .project-list {
@@ -149,6 +163,16 @@
   }
 }
 
+.project-card__title-link,
+.project-card__details-link {
+  color: inherit;
+}
+
+.project-card__title-link:hover,
+.project-card__details-link:hover {
+  color: var(--brand);
+}
+
 .project-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 20px 44px rgba(31, 42, 31, 0.12);
@@ -167,6 +191,24 @@
   border-top: 1px solid var(--border-color);
   color: var(--text-muted);
   font-size: 0.95rem;
+}
+
+.project-card__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.project-form__cancel:hover,
+.project-card__button:hover,
+.project-card__button.is-active {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.project-card__button--danger:hover {
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 @media (max-width: 720px) {

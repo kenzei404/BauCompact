@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ProjectStatus } from '../../core/models/project.model';
+import { Project, ProjectStatus } from '../../core/models/project.model';
 import { ProjectService } from '../../core/services/project.service';
 import { UserRole } from '../../core/models/user.model';
 import { StatusBadgeComponent } from '../../shared/ui/status-badge/status-badge.component';
@@ -21,6 +21,7 @@ export class ProjectsPage {
   private readonly projectService = inject(ProjectService);
 
   protected readonly projects = toSignal(this.projectService.getProjects(), { initialValue: [] });
+  protected readonly editingProjectId = signal<string | null>(null);
   protected readonly statusOptions: Array<{ value: ProjectStatus; label: string }> = [
     { value: 'draft', label: 'Entwurf' },
     { value: 'in_progress', label: 'In Arbeit' },
@@ -49,13 +50,51 @@ export class ProjectsPage {
       return;
     }
 
-    this.projectService.addProject(this.projectForm.getRawValue());
+    const formValue = this.projectForm.getRawValue();
+    const editingProjectId = this.editingProjectId();
+
+    if (editingProjectId) {
+      this.projectService.updateProject({
+        id: editingProjectId,
+        ...formValue,
+      });
+    } else {
+      this.projectService.addProject(formValue);
+    }
+
+    this.resetForm();
+  }
+
+  protected editProject(project: Project): void {
+    this.editingProjectId.set(project.id);
     this.projectForm.reset({
-      name: '',
-      description: '',
-      status: 'draft',
-      ownerRole: 'architect',
+      name: project.name,
+      description: project.description,
+      status: project.status,
+      ownerRole: project.ownerRole,
     });
+  }
+
+  protected cancelEditing(): void {
+    this.resetForm();
+  }
+
+  protected deleteProject(project: Project): void {
+    const shouldDelete = confirm(`Projekt "${project.name}" wirklich loeschen?`);
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    this.projectService.deleteProject(project.id);
+
+    if (this.editingProjectId() === project.id) {
+      this.resetForm();
+    }
+  }
+
+  protected isEditingProject(projectId: string): boolean {
+    return this.editingProjectId() === projectId;
   }
 
   protected projectTone(status: ProjectStatus): 'progress' | 'success' | 'warning' {
@@ -68,5 +107,15 @@ export class ProjectsPage {
     }
 
     return 'progress';
+  }
+
+  private resetForm(): void {
+    this.editingProjectId.set(null);
+    this.projectForm.reset({
+      name: '',
+      description: '',
+      status: 'draft',
+      ownerRole: 'architect',
+    });
   }
 }
