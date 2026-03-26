@@ -9,6 +9,65 @@
     </p>
   </div>
 
+  <section class="project-form-card">
+    <div class="project-form-card__header">
+      <div>
+        <p class="project-form-card__eyebrow">Neues Projekt</p>
+        <h3>Projekt lokal anlegen</h3>
+      </div>
+      <p class="project-form-card__text">
+        Neue Projekte erscheinen sofort in der Liste und sind direkt ueber die Detailseite erreichbar.
+      </p>
+    </div>
+
+    <form class="project-form" [formGroup]="projectForm" (ngSubmit)="submitProject()">
+      <label class="form-field">
+        <span>Name</span>
+        <input type="text" formControlName="name" placeholder="z. B. Neubau Quartier Ost" />
+        @if (projectForm.controls.name.touched && projectForm.controls.name.invalid) {
+          <small class="form-error">Name ist ein Pflichtfeld.</small>
+        }
+      </label>
+
+      <label class="form-field form-field--wide">
+        <span>Beschreibung</span>
+        <textarea
+          rows="4"
+          formControlName="description"
+          placeholder="Kurze fachliche Beschreibung des Projekts"
+        ></textarea>
+      </label>
+
+      <label class="form-field">
+        <span>Status</span>
+        <select formControlName="status">
+          @for (status of statusOptions; track status.value) {
+            <option [value]="status.value">{{ status.label }}</option>
+          }
+        </select>
+        @if (projectForm.controls.status.touched && projectForm.controls.status.invalid) {
+          <small class="form-error">Status ist ein Pflichtfeld.</small>
+        }
+      </label>
+
+      <label class="form-field">
+        <span>Verantwortliche Rolle</span>
+        <select formControlName="ownerRole">
+          @for (role of roleOptions; track role) {
+            <option [value]="role">{{ roleLabel(role) }}</option>
+          }
+        </select>
+        @if (projectForm.controls.ownerRole.touched && projectForm.controls.ownerRole.invalid) {
+          <small class="form-error">Verantwortliche Rolle ist ein Pflichtfeld.</small>
+        }
+      </label>
+
+      <div class="project-form__actions">
+        <button type="submit" class="project-form__submit">Projekt erstellen</button>
+      </div>
+    </form>
+  </section>
+
   <div class="project-list">
     @for (project of projects(); track project.id) {
       <a class="project-card" [routerLink]="['/projects', project.id]">
