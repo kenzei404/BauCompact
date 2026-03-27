@@ -68,14 +68,101 @@
     </div>
 
     <div class="calendar-board">
+      <ng-template #calendarEventTitle let-event="event" let-view="view">
+        <div class="calendar-event-item" [class.is-done]="event.meta?.status === 'done'">
+          <button
+            type="button"
+            class="calendar-event-item__check"
+            [class.is-done]="event.meta?.status === 'done'"
+            [attr.aria-label]="event.meta?.status === 'done' ? 'Bereits erledigt' : 'Als erledigt markieren'"
+            (click)="markEventAsDone(event, $event)"
+          >
+            {{ event.meta?.status === 'done' ? 'X' : '' }}
+          </button>
+
+          <button
+            type="button"
+            class="calendar-event-item__content calendar-event-item__content-button"
+            [class.is-done]="event.meta?.status === 'done'"
+            (click)="selectTask(event.meta?.taskId ?? '', $event)"
+          >
+            <span class="calendar-event-item__title">{{ event.meta?.title }}</span>
+
+            @if (view === 'week') {
+              <span class="calendar-event-item__meta">
+                {{ event.meta?.projectName }} | {{ taskStatusLabel(event.meta?.status ?? 'open') }}
+              </span>
+              <span class="calendar-event-item__description">{{ event.meta?.description }}</span>
+            }
+          </button>
+        </div>
+      </ng-template>
+
       @switch (view()) {
         @case ('month') {
-          <mwl-calendar-month-view
-            [viewDate]="viewDate()"
-            [events]="monthEvents()"
-            [weekStartsOn]="1"
-            (eventClicked)="selectEvent($event.event)"
-          />
+          <div class="month-grid">
+            <div class="month-grid__weekdays">
+              @for (weekday of ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']; track weekday) {
+                <span class="month-grid__weekday">{{ weekday }}</span>
+              }
+            </div>
+
+            <div class="month-grid__weeks">
+              @for (week of monthWeeks(); track $index) {
+                <div class="month-grid__week">
+                  @for (day of week; track day.date.toISOString()) {
+                    <div class="month-day" [class.is-out-month]="!day.inMonth">
+                      <div class="month-day__top">
+                        <span class="month-day__number">{{ day.date | date: 'd' }}</span>
+                        <div class="month-day__status-row">
+                          @if (hasStatus(day, 'open')) {
+                            <span class="month-day__status-pill is-open">
+                              O {{ monthStatusCount(day, 'open') }}
+                            </span>
+                          }
+                          @if (hasStatus(day, 'in_progress')) {
+                            <span class="month-day__status-pill is-progress">
+                              B {{ monthStatusCount(day, 'in_progress') }}
+                            </span>
+                          }
+                          @if (hasStatus(day, 'done')) {
+                            <span class="month-day__status-pill is-done">
+                              E {{ monthStatusCount(day, 'done') }}
+                            </span>
+                          }
+                        </div>
+                      </div>
+
+                      <div class="month-day__list">
+                        @for (task of day.tasks; track task.id) {
+                          <button
+                            type="button"
+                            class="month-day__task"
+                            [class.is-done]="task.status === 'done'"
+                            (click)="selectTask(task.id, $event)"
+                          >
+                            <span
+                              class="month-day__check"
+                              [class.is-done]="task.status === 'done'"
+                              (click)="markTaskAsDone(task.id, $event)"
+                            >
+                              {{ task.status === 'done' ? 'X' : '' }}
+                            </span>
+                            <span class="month-day__task-content">
+                              <span class="month-day__task-title">{{ task.title }}</span>
+                              <span class="month-day__task-meta">
+                                {{ taskStatusLabel(task.status) }}
+                              </span>
+                            </span>
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
         }
         @case ('week') {
           <mwl-calendar-week-view
@@ -84,6 +171,7 @@
             [weekStartsOn]="1"
             [dayStartHour]="7"
             [dayEndHour]="19"
+            [eventTitleTemplate]="calendarEventTitle"
             (eventClicked)="selectEvent($event.event)"
           />
         }

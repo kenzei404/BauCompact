@@ -1,70 +1,39 @@
-import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { computed, inject, Injectable, Signal } from '@angular/core';
+import { APP_DATA_SOURCE } from '../firebase/firebase.config';
 import { User } from '../models/user.model';
-import { MOCK_USER } from '../mocks/user.mock';
-
-const STORAGE_KEY = 'bauconect-demo-user';
+import { MockAuthStoreService } from './mock-auth-store.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly platformId = inject(PLATFORM_ID);
-  private readonly userSignal = signal<User | null>(this.readStoredUser());
+  private readonly dataSource = inject(APP_DATA_SOURCE);
+  private readonly mockStore = inject(MockAuthStoreService);
+  private readonly source = this.resolveSource();
 
-  readonly user = computed(() => this.userSignal());
+  readonly user: Signal<User | null> = computed(() => this.source.user());
 
   login(): User {
-    this.userSignal.set(MOCK_USER);
-    this.persistUser(MOCK_USER);
-    return MOCK_USER;
+    return this.source.login();
   }
 
   logout(): void {
-    this.userSignal.set(null);
-    this.clearStoredUser();
+    this.source.logout();
   }
 
   isAuthenticated(): boolean {
-    return this.userSignal() !== null;
+    return this.source.isAuthenticated();
   }
 
   currentUser(): User | null {
-    return this.userSignal();
+    return this.source.currentUser();
   }
 
-  private readStoredUser(): User | null {
-    if (!isPlatformBrowser(this.platformId)) {
-      return null;
+  private resolveSource(): MockAuthStoreService {
+    if (this.dataSource === 'firebase') {
+      return this.mockStore;
     }
 
-    const rawUser = localStorage.getItem(STORAGE_KEY);
-
-    if (!rawUser) {
-      return null;
-    }
-
-    try {
-      return JSON.parse(rawUser) as User;
-    } catch {
-      localStorage.removeItem(STORAGE_KEY);
-      return null;
-    }
-  }
-
-  private persistUser(user: User): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-  }
-
-  private clearStoredUser(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    localStorage.removeItem(STORAGE_KEY);
+    return this.mockStore;
   }
 }

@@ -17,6 +17,7 @@ export class MainLayoutComponent {
 
   protected readonly navigationItems = [
     { label: 'Dashboard', link: '/dashboard' },
+    { label: 'Meine Arbeit', link: '/my-work' },
     { label: 'Projekte', link: '/projects' },
     { label: 'Aufgaben', link: '/tasks' },
     { label: 'Kalender', link: '/calendar' },

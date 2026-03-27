@@ -1,67 +1,59 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable } from 'rxjs';
-import { Task, TaskStatus } from '../models/task.model';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { APP_DATA_SOURCE } from '../firebase/firebase.config';
+import { Task } from '../models/task.model';
 import { UserRole } from '../models/user.model';
-import { MOCK_TASKS } from '../mocks/task.mock';
-
-export interface CreateTaskInput {
-  title: string;
-  description: string;
-  status: TaskStatus;
-  projectId: string;
-  assignedRole: UserRole;
-  scheduledDate?: string;
-}
-
-export interface UpdateTaskInput extends CreateTaskInput {
-  id: string;
-}
+import { CreateTaskInput, MockTaskStoreService, UpdateTaskInput } from './mock-task-store.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  private readonly tasksSubject = new BehaviorSubject<Task[]>([...MOCK_TASKS]);
+  private readonly dataSource = inject(APP_DATA_SOURCE);
+  private readonly mockStore = inject(MockTaskStoreService);
+  private readonly source = this.resolveSource();
 
   getTasks(): Observable<Task[]> {
-    return this.tasksSubject.asObservable();
+    return this.source.getTasks();
   }
 
   getTasksByProjectId(projectId: string): Observable<Task[]> {
-    return this.tasksSubject
-      .asObservable()
-      .pipe(map((tasks) => tasks.filter((task) => task.projectId === projectId)));
+    return this.source.getTasksByProjectId(projectId);
+  }
+
+  getAvailableTasksForRole(role: UserRole, userId?: string): Observable<Task[]> {
+    return this.source.getAvailableTasksForRole(role, userId);
+  }
+
+  getNextTaskForRole(role: UserRole, userId?: string): Observable<Task | undefined> {
+    return this.source.getNextTaskForRole(role, userId);
   }
 
   addTask(task: CreateTaskInput): void {
-    const nextTask: Task = {
-      id: `task-${Date.now()}`,
-      ...task,
-      description: task.description.trim(),
-      title: task.title.trim(),
-      scheduledDate: task.scheduledDate ?? new Date().toISOString().slice(0, 10),
-    };
-
-    this.tasksSubject.next([nextTask, ...this.tasksSubject.value]);
+    this.source.addTask(task);
   }
 
   updateTask(updatedTask: UpdateTaskInput): void {
-    this.tasksSubject.next(
-      this.tasksSubject.value.map((task) =>
-        task.id === updatedTask.id
-          ? {
-              ...task,
-              ...updatedTask,
-              title: updatedTask.title.trim(),
-              description: updatedTask.description.trim(),
-              scheduledDate: updatedTask.scheduledDate ?? task.scheduledDate,
-            }
-          : task,
-      ),
-    );
+    this.source.updateTask(updatedTask);
   }
 
   deleteTask(id: string): void {
-    this.tasksSubject.next(this.tasksSubject.value.filter((task) => task.id !== id));
+    this.source.deleteTask(id);
+  }
+
+  canStartTask(task: Task): boolean {
+    return this.source.canStartTask(task);
+  }
+
+  completeTask(taskId: string): void {
+    this.source.completeTask(taskId);
+  }
+
+  private resolveSource(): MockTaskStoreService {
+    if (this.dataSource === 'firebase') {
+      return this.mockStore;
+    }
+
+    return this.mockStore;
   }
 }

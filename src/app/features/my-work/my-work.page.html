@@ -1,0 +1,107 @@
+<section class="page-section">
+  <div class="page-header">
+    <div>
+      <p class="page-header__eyebrow">Meine Arbeit</p>
+      <h2>Was ist als Naechstes zu tun?</h2>
+    </div>
+    <p class="page-header__text">
+      Fokus auf die naechste freigegebene Aufgabe fuer
+      <strong>{{ currentUser?.name }}</strong>
+      ({{ roleLabel(currentUser?.role ?? 'worker') }}).
+    </p>
+  </div>
+
+  @if (nextTaskCard(); as nextTask) {
+    <section class="next-task-card">
+      <div class="next-task-card__header">
+        <div>
+          <p class="next-task-card__eyebrow">Mein naechster Auftrag</p>
+          <h3>{{ nextTask.title }}</h3>
+        </div>
+        <app-status-badge [tone]="taskTone(nextTask.status)">
+          {{ taskStatusLabel(nextTask.status) }}
+        </app-status-badge>
+      </div>
+
+      <div class="next-task-card__meta">
+        <span>{{ nextTask.projectName }}</span>
+        <span>{{ nextTask.unit || 'Ohne Einheit' }}</span>
+        <span>{{ nextTask.location || 'Ohne Ort' }}</span>
+        <span>{{ nextTask.trade || roleLabel(nextTask.assignedRole) }}</span>
+        <span>Prioritaet: {{ priorityLabel(nextTask.priority) }}</span>
+      </div>
+
+      <p class="next-task-card__description">{{ nextTask.description }}</p>
+
+      <div class="next-task-card__footer">
+        <div class="next-task-card__sequence">
+          @if (nextTask.sequence) {
+            <span>Reihenfolge {{ nextTask.sequence }}</span>
+          }
+          @if (nextTask.scheduledDate) {
+            <span>{{ nextTask.scheduledDate }}</span>
+          }
+        </div>
+
+        @if (nextTask.status !== 'done') {
+          <button type="button" class="task-action task-action--primary" (click)="advanceTask(nextTask)">
+            {{ actionLabel(nextTask.status) }}
+          </button>
+        }
+      </div>
+    </section>
+  } @else {
+    <section class="empty-state">
+      <h3>Aktuell ist kein Auftrag freigegeben</h3>
+      <p>Alle freigegebenen Aufgaben sind erledigt oder warten noch auf eine Abhaengigkeit.</p>
+      <a routerLink="/tasks" class="empty-state__link">Zur Aufgabenliste</a>
+    </section>
+  }
+
+  <section class="queue-section">
+    <div class="queue-section__header">
+      <div>
+        <p class="queue-section__eyebrow">Weitere freigegebene Aufgaben</p>
+        <h3>Danach geht es hier weiter</h3>
+      </div>
+      <span class="queue-section__count">{{ queuedTasks().length }} freigegeben</span>
+    </div>
+
+    @if (queuedTasks().length) {
+      <div class="queue-list">
+        @for (task of queuedTasks(); track task.id) {
+          <article class="queue-item">
+            <div class="queue-item__top">
+              <div>
+                <h4>{{ task.title }}</h4>
+                <p>{{ task.projectName }} · {{ task.unit || 'Ohne Einheit' }} · {{ task.location || 'Ohne Ort' }}</p>
+              </div>
+              <app-status-badge [tone]="taskTone(task.status)">
+                {{ taskStatusLabel(task.status) }}
+              </app-status-badge>
+            </div>
+
+            <p class="queue-item__description">{{ task.description }}</p>
+
+            <div class="queue-item__bottom">
+              <span>{{ task.trade || roleLabel(task.assignedRole) }}</span>
+              <span>Prioritaet: {{ priorityLabel(task.priority) }}</span>
+              @if (task.sequence) {
+                <span>Reihenfolge {{ task.sequence }}</span>
+              }
+              @if (task.status !== 'done') {
+                <button type="button" class="task-action" (click)="advanceTask(task)">
+                  {{ actionLabel(task.status) }}
+                </button>
+              }
+            </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <p class="queue-section__empty">
+        Neben dem aktuellen Auftrag ist im Moment keine weitere Aufgabe freigegeben.
+      </p>
+    }
+  </section>
+</section>

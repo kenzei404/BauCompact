@@ -1,0 +1,152 @@
+.page-section {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+}
+
+.page-header__eyebrow,
+.next-task-card__eyebrow,
+.queue-section__eyebrow {
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+.page-header h2,
+.next-task-card h3,
+.queue-section h3,
+.empty-state h3 {
+  margin: 0;
+}
+
+.page-header__text {
+  max-width: 34rem;
+  margin: 0;
+  color: #4b5563;
+}
+
+.next-task-card,
+.queue-section,
+.empty-state {
+  background: #ffffff;
+  border: 1px solid #dbe3eb;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+}
+
+.next-task-card {
+  background: linear-gradient(135deg, #fffdf5 0%, #ffffff 72%);
+}
+
+.next-task-card__header,
+.queue-section__header,
+.queue-item__top,
+.next-task-card__footer,
+.queue-item__bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.next-task-card__meta,
+.next-task-card__sequence,
+.queue-item__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.next-task-card__meta span,
+.next-task-card__sequence span,
+.queue-item__bottom span,
+.queue-section__count {
+  background: #f3f6f8;
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+}
+
+.next-task-card__description,
+.queue-item__description,
+.queue-section__empty,
+.empty-state p {
+  margin: 0;
+  color: #374151;
+  line-height: 1.55;
+}
+
+.task-action {
+  border: 0;
+  border-radius: 0.85rem;
+  background: #e8f4ea;
+  color: #1f6f3f;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.task-action--primary {
+  background: #2f855a;
+  color: #ffffff;
+}
+
+.queue-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.queue-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  background: #fafcfd;
+}
+
+.queue-item h4 {
+  margin: 0 0 0.25rem;
+}
+
+.queue-item__top p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.empty-state {
+  text-align: center;
+}
+
+.empty-state__link {
+  display: inline-flex;
+  margin-top: 1rem;
+  color: #1f6f3f;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .page-header,
+  .next-task-card__header,
+  .queue-section__header,
+  .queue-item__top,
+  .next-task-card__footer,
+  .queue-item__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-action,
+  .task-action--primary {
+    width: 100%;
+    justify-content: center;
+  }
+}
